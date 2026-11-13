@@ -8,6 +8,7 @@
 #      tests/load_e2e.sh   — quiet-window suggestion and the load gate (pgbench)
 #      tests/extras_e2e.sh — 0.6 extras: encryption, roles file + with_roles, notifications, GFS, metrics (own S3)
 #      tests/pitr_e2e.sh   — optional point-in-time restore: setup, wal-push/get, restore to a time, gaps, upgrade (own S3)
+#      tests/ext_e2e.sh    — pgmq queues and pg_cron jobs through backup, restore test and restore (own S3)
 #      tests/s3down_e2e.sh — S3 that never answers: new databases, heartbeat, cancel and shutdown never wait for it
 #      tests/https_s3_e2e.sh — real https to AWS S3 with dummy keys: the TLS path itself (0.6.0 panicked there)
 #      tests/imds_e2e.sh   — S3 credentials from the EC2 instance role (IMDSv2, fake endpoint, rotating MinIO STS keys)
@@ -36,6 +37,7 @@ echo "== server ready"
 ../tests/load_e2e.sh; load=$?
 IMAGE=pgbx:test ../tests/extras_e2e.sh; extras=$?
 PITR_IMAGE=pgbx:test ../tests/pitr_e2e.sh; pitr=$?
+IMAGE=pgbx:test ../tests/ext_e2e.sh; ext=$?
 IMAGE=pgbx:test ../tests/s3down_e2e.sh; s3down=$?
 IMAGE=pgbx:test ../tests/imds_e2e.sh; imds=$?
 PGBX_IMAGE=pgbx:test ../tests/https_s3_e2e.sh; https=$?   # real https to AWS S3 (dummy keys; needs internet)
@@ -55,5 +57,5 @@ docker compose -f compose.local.yml down -v >/dev/null 2>&1
      docker run --rm --env-file local.env amazon/aws-cli --endpoint-url "$S3_ENDPOINT" s3 rm --recursive --quiet "s3://$S3_BUCKET/" >/dev/null 2>&1 \
        && echo "== emptied the local test bucket $S3_BUCKET" ;;
  esac)
-echo "== e2e exit $e2e, cli_e2e exit $cli, ui_e2e exit $ui, serve_e2e exit $serve, queue_e2e exit $queue, load_e2e exit $load, extras_e2e exit $extras, pitr_e2e exit $pitr, s3down_e2e exit $s3down, imds_e2e exit $imds, https_s3_e2e exit $https, bench exit $bench, upgrade exit $upgrade, diag smoke exit $diag"
-[ $e2e -eq 0 ] && [ $cli -eq 0 ] && [ $ui -eq 0 ] && [ $serve -eq 0 ] && [ $queue -eq 0 ] && [ $load -eq 0 ] && [ $extras -eq 0 ] && [ $pitr -eq 0 ] && [ $s3down -eq 0 ] && [ $imds -eq 0 ] && [ $https -eq 0 ] && [ $bench -eq 0 ] && [ $upgrade -eq 0 ] && [ $diag -eq 0 ]
+echo "== e2e exit $e2e, cli_e2e exit $cli, ui_e2e exit $ui, serve_e2e exit $serve, queue_e2e exit $queue, load_e2e exit $load, extras_e2e exit $extras, pitr_e2e exit $pitr, ext_e2e exit $ext, s3down_e2e exit $s3down, imds_e2e exit $imds, https_s3_e2e exit $https, bench exit $bench, upgrade exit $upgrade, diag smoke exit $diag"
+[ $e2e -eq 0 ] && [ $cli -eq 0 ] && [ $ui -eq 0 ] && [ $serve -eq 0 ] && [ $queue -eq 0 ] && [ $load -eq 0 ] && [ $extras -eq 0 ] && [ $pitr -eq 0 ] && [ $ext -eq 0 ] && [ $s3down -eq 0 ] && [ $imds -eq 0 ] && [ $https -eq 0 ] && [ $bench -eq 0 ] && [ $upgrade -eq 0 ] && [ $diag -eq 0 ]

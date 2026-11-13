@@ -13,7 +13,7 @@
 use crate::extras::{download, upload};
 use crate::worker::{client_tool, connect, pe, Ctx, JobCfg};
 use crate::{crypt, globals::jstr};
-use postgres::Client;
+use postgres::{Client, GenericClient};
 use s3::Bucket;
 use std::io::{Read, Write};
 use std::process::{Command, Stdio};
@@ -39,7 +39,7 @@ struct Queue {
     partitioned: bool,
 }
 
-fn queues(cl: &mut Client) -> Result<Vec<Queue>, String> {
+fn queues(cl: &mut impl GenericClient) -> Result<Vec<Queue>, String> {
     let has = cl
         .query_opt("SELECT 1 FROM pg_extension WHERE extname = 'pgmq'", &[])
         .map_err(pe)?
@@ -69,7 +69,7 @@ fn queues(cl: &mut Client) -> Result<Vec<Queue>, String> {
 }
 
 /// Columns of a table, in order (COPY needs them listed: a later pgmq may add columns).
-fn columns(cl: &mut Client, table: &str) -> Result<Vec<String>, String> {
+fn columns(cl: &mut impl GenericClient, table: &str) -> Result<Vec<String>, String> {
     Ok(cl
         .query(
             "SELECT attname::text FROM pg_attribute WHERE attrelid = to_regclass($1) AND attnum > 0 AND NOT attisdropped ORDER BY attnum",
@@ -82,7 +82,7 @@ fn columns(cl: &mut Client, table: &str) -> Result<Vec<String>, String> {
 }
 
 /// GRANT statements on a table, each wrapped so a role missing on the target is a NOTICE, not a failure.
-fn grants(cl: &mut Client, schema: &str, table: &str) -> Result<Vec<String>, String> {
+fn grants(cl: &mut impl GenericClient, schema: &str, table: &str) -> Result<Vec<String>, String> {
     Ok(cl
         .query(
             "SELECT grantee::text, string_agg(privilege_type, ', ' ORDER BY privilege_type)
