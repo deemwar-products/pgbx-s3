@@ -26,12 +26,12 @@ npm run preview
 
 ## Deploy (Cloudflare Pages)
 
-Live at **https://pgbx.deemwar.com** (Cloudflare Pages project `pgbx`). `.github/workflows/pages.yml` (manual: *Run
-workflow*) builds with `PUBLIC_SITE_URL=https://pgbx.deemwar.com PUBLIC_BASE_PATH=/` and deploys with wrangler, using
+Live at **https://pgbackup.deemwar.com** (Cloudflare Pages project `pgbx`). `.github/workflows/pages.yml` (manual: *Run
+workflow*) builds with `PUBLIC_SITE_URL=https://pgbackup.deemwar.com PUBLIC_BASE_PATH=/` and deploys with wrangler, using
 the repo secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`. By hand:
 
 ```sh
-cd site && PUBLIC_SITE_URL=https://pgbx.deemwar.com PUBLIC_BASE_PATH=/ npm run build
+cd site && PUBLIC_SITE_URL=https://pgbackup.deemwar.com PUBLIC_BASE_PATH=/ npm run build
 npx wrangler pages deploy dist --project-name pgbx --branch main
 ```
 

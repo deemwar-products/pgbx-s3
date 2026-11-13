@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// Served at https://pgbx.deemwar.com (Cloudflare Pages project `pgbx`); local dev keeps /pgbx unless PUBLIC_BASE_PATH is set
+// Served at https://pgbackup.deemwar.com (Cloudflare Pages project `pgbx`); local dev keeps /pgbx unless PUBLIC_BASE_PATH is set
 const site = process.env.PUBLIC_SITE_URL || 'https://example.github.io';
 const base = process.env.PUBLIC_BASE_PATH || '/pgbx';
 

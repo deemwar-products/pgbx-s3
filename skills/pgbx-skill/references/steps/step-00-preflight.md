@@ -10,7 +10,7 @@ Outcomes:
 
 - **`pgbx` not on PATH** — respond exactly:
   > `pgbx` is not installed. It ships with pgbx v0.3 — from the pgbx repo run
-  > `curl -fsSL https://pgbx.deemwar.com/install.sh | sh` (installs the binary and this skill; `pgbx skill install` re-installs just the skill).
+  > `curl -fsSL https://pgbackup.deemwar.com/install.sh | sh` (installs the binary and this skill; `pgbx skill install` re-installs just the skill).
   > Until then I can use the SQL API if you give me a `psql` connection.
 
   If `psql` works, set `pgbx_available=false` and use the `Fallback (SQL):` lines.

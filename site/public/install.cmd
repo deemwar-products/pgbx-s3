@@ -1,7 +1,7 @@
 @echo off
 rem pgbx installer for Windows, plain cmd.exe: no PowerShell, so execution policies never block it.
 rem Uses only tools built into Windows 10 1803+ / 11: curl.exe, certutil, tar, reg.
-rem   curl -fsSL https://pgbx.deemwar.com/install.cmd -o install.cmd && install.cmd
+rem   curl -fsSL https://pgbackup.deemwar.com/install.cmd -o install.cmd && install.cmd
 rem Options: -Version vX.Y.Z (default latest)  -NoSkill  -Skill  -InstallDir DIR  -BaseUrl URL (mirror/testing)
 rem Env: PGBX_SKILL=no|yes, PGBX_ADAPTERS_DIR (default %APPDATA%\pgbx\adapters)
 rem Downloads are verified against the release's SHA256SUMS; any mismatch aborts before anything is installed.
@@ -98,7 +98,7 @@ if /i not "%SKILL%"=="yes" (
 
 echo.
 echo The pgbx extension runs on Linux Postgres servers (PostgreSQL 13-18); install it there with:
-echo   curl -fsSL https://pgbx.deemwar.com/install.sh ^| sh
+echo   curl -fsSL https://pgbackup.deemwar.com/install.sh ^| sh
 echo From Windows, connect to a server: pgbx setup client prod --url postgres://user@db.example.com/postgres
 rmdir /s /q "%TMPD%" >nul 2>&1
 exit /b 0

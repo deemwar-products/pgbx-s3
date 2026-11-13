@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
-  <!-- pgbx's own mark (pgbx.deemwar.com favicon: database cylinder on #1f6feb), scaled, with the name below -->
+  <!-- pgbx's own mark (pgbackup.deemwar.com favicon: database cylinder on #1f6feb), scaled, with the name below -->
   <rect width="512" height="512" rx="72" fill="#1f6feb"/>
   <g transform="translate(96,40) scale(10)">
     <ellipse cx="16" cy="9" rx="9" ry="3.5" fill="#fff"/>

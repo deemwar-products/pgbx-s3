@@ -1,7 +1,7 @@
 name: Docs site (Cloudflare Pages)
 
 # Manual only. Builds the Astro docs site (with the installers in site/public) and deploys it to the Cloudflare Pages
-# project `pgbx`, served at https://pgbx.deemwar.com. Secrets: CLOUDFLARE_API_TOKEN (Pages edit) and
+# project `pgbx`, served at https://pgbackup.deemwar.com. Secrets: CLOUDFLARE_API_TOKEN (Pages edit) and
 # CLOUDFLARE_ACCOUNT_ID. Locally the same deploy is: cd site && npm run build && npx wrangler pages deploy dist --project-name pgbx --branch main
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
       - name: Build
         working-directory: site
         env:
-          PUBLIC_SITE_URL: https://pgbx.deemwar.com
+          PUBLIC_SITE_URL: https://pgbackup.deemwar.com
           PUBLIC_BASE_PATH: /
         run: npm ci && npm run build
       - name: Deploy to Cloudflare Pages

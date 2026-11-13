@@ -17,7 +17,7 @@ part: [Use pgbx as your Postgres client](../../guides/client-only/).
 ## On the database server
 
 ```sh
-curl -fsSL https://pgbx.deemwar.com/install.sh | sh
+curl -fsSL https://pgbackup.deemwar.com/install.sh | sh
 sudo pgbx setup server     # asks for your S3 bucket; prints the ONE restart command, e.g. sudo systemctl restart postgresql@16-main
 pgbx doctor                # after that restart
 ```
@@ -34,7 +34,7 @@ Install the pgbx CLI, then tell it how to reach the server. `setup client` needs
 <TabItem label="Linux / macOS">
 
 ```sh
-curl -fsSL https://pgbx.deemwar.com/install.sh | sh
+curl -fsSL https://pgbackup.deemwar.com/install.sh | sh
 # over SSH, with the ssh example adapter the installer put in ~/.config/pgbx/adapters (needs Node 18+)
 pgbx setup client prod --adapter ssh target=ops@db.example.com user=postgres 'password=$PGPASSWORD'
 # or, when Postgres is reachable directly, a connection string:
@@ -48,14 +48,14 @@ Command Prompt (recommended: plain cmd.exe, so PowerShell execution policies nev
 built-in curl, certutil and tar, and checks the download against the release's SHA256SUMS):
 
 ```bat
-curl -fsSL https://pgbx.deemwar.com/install.cmd -o install.cmd && install.cmd
+curl -fsSL https://pgbackup.deemwar.com/install.cmd -o install.cmd && install.cmd
 pgbx setup client prod --adapter ssh target=ops@db.example.com user=postgres password=$PGPASSWORD
 ```
 
 Or PowerShell:
 
 ```powershell
-powershell -c "irm https://pgbx.deemwar.com/install.ps1 | iex"
+powershell -c "irm https://pgbackup.deemwar.com/install.ps1 | iex"
 pgbx setup client prod --adapter ssh target=ops@db.example.com user=postgres 'password=$PGPASSWORD'
 ```
 
@@ -154,7 +154,7 @@ roles and EKS (IRSA, Pod Identity) work the same way. Tested on real EC2 against
 | `--no-extension` | | CLI only |
 | `--base-url URL` | `-BaseUrl URL` | download from a mirror (must hold `SHA256SUMS`) |
 
-Flags with the one-liner: `curl -fsSL https://pgbx.deemwar.com/install.sh | sh -s -- --pg-version 16 --no-skill`.
+Flags with the one-liner: `curl -fsSL https://pgbackup.deemwar.com/install.sh | sh -s -- --pg-version 16 --no-skill`.
 
 ## Manual install
 

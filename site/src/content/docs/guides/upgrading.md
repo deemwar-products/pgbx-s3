@@ -13,7 +13,7 @@ sidebar: { order: 11 }
 ALTER EXTENSION pgbx UPDATE;
 ```
 
-3. Update the `pgbx` CLI by re-running the installer: `curl -fsSL https://pgbx.deemwar.com/install.sh | sh` (it also refreshes the agent skill).
+3. Update the `pgbx` CLI by re-running the installer: `curl -fsSL https://pgbackup.deemwar.com/install.sh | sh` (it also refreshes the agent skill).
 
 ## 0.6.0 → 0.6.1
 

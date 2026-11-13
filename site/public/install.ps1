@@ -1,7 +1,7 @@
 # pgbx installer for Windows: the pgbx CLI (+ the agent skill). The pgbx extension itself is Linux-only.
 #
-#   powershell -c "irm https://pgbx.deemwar.com/install.ps1 | iex"
-#   & ([scriptblock]::Create((irm https://pgbx.deemwar.com/install.ps1))) -Version v0.5.0 -NoSkill
+#   powershell -c "irm https://pgbackup.deemwar.com/install.ps1 | iex"
+#   & ([scriptblock]::Create((irm https://pgbackup.deemwar.com/install.ps1))) -Version v0.5.0 -NoSkill
 #
 # Env: PGBX_SKILL=no (or yes) skips the skill prompt for the one-liner.
 # Parameters: -Version vX.Y.Z (default latest) -Skill (install skill without asking) -NoSkill
@@ -97,7 +97,7 @@ try {
     }
     Write-Host ""
     Write-Host "The pgbx extension runs on Linux Postgres servers (PostgreSQL 13-18); install it there with:"
-    Write-Host "  curl -fsSL https://pgbx.deemwar.com/install.sh | sh"
+    Write-Host "  curl -fsSL https://pgbackup.deemwar.com/install.sh | sh"
     Write-Host "From Windows, pgbx talks to a server over TCP: pgbx status --host db.example.com --user postgres"
 } finally {
     Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
