@@ -6,7 +6,7 @@ rem Options: -Version vX.Y.Z (default latest)  -NoSkill  -Skill  -InstallDir DIR
 rem Env: PGBX_SKILL=no|yes, PGBX_ADAPTERS_DIR (default %APPDATA%\pgbx\adapters)
 rem Downloads are verified against the release's SHA256SUMS; any mismatch aborts before anything is installed.
 setlocal EnableExtensions EnableDelayedExpansion
-set "REPO=deemwar-products/pgbx-s3"
+set "REPO=deemwar-products/pgbx"
 set "VERSION="
 set "SKILL=%PGBX_SKILL%"
 set "INSTALLDIR="

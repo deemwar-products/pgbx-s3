@@ -13,12 +13,12 @@
 #   --no-extension     CLI only
 #   --base-url URL     download from URL/<file> instead of GitHub Releases (testing, mirrors)
 #
-# Default source: https://github.com/deemwar-products/pgbx-s3/releases/latest/download/<asset> (no GitHub API call);
+# Default source: https://github.com/deemwar-products/pgbx/releases/latest/download/<asset> (no GitHub API call);
 # --version vX uses .../releases/download/vX/<asset>. Downloads are verified against the release's SHA256SUMS; any mismatch aborts.
 # It never edits postgresql.conf and never restarts anything: `sudo pgbx setup` does the configuration.
 set -eu
 
-REPO=deemwar-products/pgbx-s3
+REPO=deemwar-products/pgbx
 DOCS=https://pgbx.deemwar.com
 VERSION=""
 PG_VERSION=""

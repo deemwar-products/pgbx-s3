@@ -91,7 +91,7 @@ says so (`pgbx's extension supports PostgreSQL 13–18; found N`).
 
 ## What the installer does
 
-1. Downloads from the latest GitHub Release (`https://github.com/deemwar-products/pgbx-s3/releases/latest/download/…`,
+1. Downloads from the latest GitHub Release (`https://github.com/deemwar-products/pgbx/releases/latest/download/…`,
    no GitHub API call) or the release given with `--version`, and checks every file against the release's
    `SHA256SUMS`. A mismatch stops the install before anything is copied.
 2. Installs `pgbx` to `/usr/local/bin` (with `sudo` when needed), or `~/.local/bin` when there is no sudo.
@@ -158,7 +158,7 @@ Flags with the one-liner: `curl -fsSL https://pgbx.deemwar.com/install.sh | sh -
 
 ## Manual install
 
-Download from [GitHub Releases](https://github.com/deemwar-products/pgbx-s3/releases) the files for your machine and
+Download from [GitHub Releases](https://github.com/deemwar-products/pgbx/releases) the files for your machine and
 `SHA256SUMS`, then:
 
 ```sh
