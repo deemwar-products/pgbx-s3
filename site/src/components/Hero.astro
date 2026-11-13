@@ -3,7 +3,7 @@ import Default from '@astrojs/starlight/components/Hero.astro';
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const steps = [
-	{ what: 'Install it on the server that runs Postgres', cmd: `curl -fsSL https://pgbackup.deemwar.com/install.sh | sh` },
+	{ what: 'Install it on the server that runs Postgres', cmd: `curl -fsSL https://pgbx.deemwar.com/install.sh | sh` },
 	{ what: 'Tell it your storage bucket (it asks you)', cmd: 'sudo pgbx setup server' },
 	{ what: 'Restart Postgres once (setup prints the exact command)', cmd: 'sudo systemctl restart postgresql' },
 ];

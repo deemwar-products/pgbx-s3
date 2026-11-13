@@ -76,7 +76,7 @@ Without the pgbx library on the target, the pgbx schema/extension is left out so
 The agent skill (`skills/pgbx-skill`) is embedded in the binary at build time (`build.rs`).
 `pgbx skill install` unpacks it to `~/.local/share/pgbx/skill/<version>/` and links
 `~/.claude/skills/pgbx-skill` (`$CLAUDE_SKILLS_DIR`) and, when `$AGENTS_SKILLS_DIR` is set or `codex` is on PATH,
-`~/.agents/skills/pgbx-skill`. The installer (`curl -fsSL https://pgbackup.deemwar.com/install.sh | sh`) installs the binary and the skill. Server images ship
+`~/.agents/skills/pgbx-skill`. The installer (`curl -fsSL https://pgbx.deemwar.com/install.sh | sh`) installs the binary and the skill. Server images ship
 only the binary.
 
 ## Audit UI (`pgbx ui`)

@@ -10,7 +10,7 @@ on:
         required: false
 
 env:
-  DOCS: https://pgbackup.deemwar.com
+  DOCS: https://pgbx.deemwar.com
   VER: ${{ github.event.inputs.version }}
 
 jobs:

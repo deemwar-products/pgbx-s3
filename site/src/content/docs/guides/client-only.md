@@ -11,7 +11,7 @@ answers read queries as JSON, and gives your AI agent a notebook per database. N
 ## Install the CLI only
 
 ```sh
-curl -fsSL https://pgbackup.deemwar.com/install.sh | sh
+curl -fsSL https://pgbx.deemwar.com/install.sh | sh
 ```
 
 On your laptop that puts `pgbx` on your PATH, copies the example adapters to `~/.config/pgbx/adapters` and

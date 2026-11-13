@@ -5,21 +5,21 @@ Zero-touch Postgres backups to S3. **Create a database and it is backed up.** Ev
 Three parts: the **pgbx extension** runs inside Postgres and does the work (schedules, `pg_dump` to S3,
 restore tests, restores); the **pgbx CLI** (`pgbx`) is the client that talks to one or more Postgres servers
 (and restores straight from S3 when Postgres is down); the **agent skill** drives the CLI with `--json`.
-See [How it works](https://pgbackup.deemwar.com/concepts/how-it-works/).
+See [How it works](https://pgbx.deemwar.com/concepts/how-it-works/).
 
-Full documentation: [`site/`](site/README.md) (Astro Starlight, live at https://pgbackup.deemwar.com).
+Full documentation: [`site/`](site/README.md) (Astro Starlight, live at https://pgbx.deemwar.com).
 
 ## Quick start (Linux, PostgreSQL 13–18)
 ```sh
-curl -fsSL https://pgbackup.deemwar.com/install.sh | sh
+curl -fsSL https://pgbx.deemwar.com/install.sh | sh
 sudo pgbx setup server                        # S3 settings; prints the ONE restart command
 sudo systemctl restart postgresql@16-main     # (the command setup printed)
 # on your laptop:
 pgbx setup client prod --adapter ssh target=ops@db.example.com user=postgres 'password=$PGPASSWORD'
 pgbx doctor
 ```
-Windows (CLI + agent skill): `powershell -c "irm https://pgbackup.deemwar.com/install.ps1 | iex"`.
-Flags, manual install and uninstall: [Install](https://pgbackup.deemwar.com/getting-started/install/).
+Windows (CLI + agent skill): `powershell -c "irm https://pgbx.deemwar.com/install.ps1 | iex"`.
+Flags, manual install and uninstall: [Install](https://pgbx.deemwar.com/getting-started/install/).
 
 ## Everyday SQL (run inside the database)
 ```sql

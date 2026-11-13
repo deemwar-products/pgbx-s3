@@ -1,8 +1,8 @@
 #!/bin/sh
 # pgbx installer: the pgbx CLI, the pgbx Postgres extension (Linux, PostgreSQL 13-18) and the agent skill.
 #
-#   curl -fsSL https://pgbackup.deemwar.com/install.sh | sh
-#   curl -fsSL https://pgbackup.deemwar.com/install.sh | sh -s -- --pg-version 16 --no-skill
+#   curl -fsSL https://pgbx.deemwar.com/install.sh | sh
+#   curl -fsSL https://pgbx.deemwar.com/install.sh | sh -s -- --pg-version 16 --no-skill
 #
 # Options:
 #   --version vX.Y.Z   release to install (default: latest)
@@ -19,7 +19,7 @@
 set -eu
 
 REPO=deemwar-products/pgbx-s3
-DOCS=https://pgbackup.deemwar.com
+DOCS=https://pgbx.deemwar.com
 VERSION=""
 PG_VERSION=""
 PREFIX=""

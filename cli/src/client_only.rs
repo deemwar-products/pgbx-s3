@@ -7,7 +7,7 @@ use crate::one;
 use postgres::Client;
 use serde_json::{json, Value};
 
-pub const INSTALL: &str = "curl -fsSL https://pgbackup.deemwar.com/install.sh | sh";
+pub const INSTALL: &str = "curl -fsSL https://pgbx.deemwar.com/install.sh | sh";
 pub const OFF: &str = "pgbx extension not installed on this server: backups are off; queries, profiles and adapters work";
 pub fn turn_on() -> String {
     format!("optional, to turn on backups: on the database server run `{}` and then `sudo pgbx setup server`", INSTALL)

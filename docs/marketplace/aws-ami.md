@@ -15,7 +15,7 @@ Free AMI: self-managed PostgreSQL on EC2 with pgbx backups built in. Standing ru
 
 ```sh
 apt-get install -y postgresql-17            # from PGDG
-curl -fsSL https://pgbackup.deemwar.com/install.sh | sh -s -- --version v0.6.0 --pg-version 17 --no-skill
+curl -fsSL https://pgbx.deemwar.com/install.sh | sh -s -- --version v0.6.0 --pg-version 17 --no-skill
 ```
 
 - `install.sh` checks every file against the release's SHA256SUMS and installs the pgbx CLI to /usr/local/bin and
@@ -86,7 +86,7 @@ Without S3 (Packer build, no bucket yet): `SELECT extversion FROM pg_extension W
 
 ## 5. Listing text
 
-- Docs: **https://pgbackup.deemwar.com/** (no muthuishere links anywhere).
+- Docs: **https://pgbx.deemwar.com/** (no muthuishere links anywhere).
 - Description:
   > PostgreSQL with backups that look after themselves. This AMI runs PostgreSQL 17 with pgbx, an open-source (MIT)
   > extension that backs up every database to your own S3 bucket automatically, including databases you create
