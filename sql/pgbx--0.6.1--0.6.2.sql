@@ -1,0 +1,1 @@
+-- pgbx 0.6.1 -> 0.6.2: no schema change (pgmq queues and pg_cron handling live in the library and the CLI).

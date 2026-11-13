@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.6.2
+
+- **Fix: pgmq queues were missing from backups.** pgmq makes every queue table (`pgmq.q_*`, `pgmq.a_*`) a member of
+  its extension, and pg_dump never dumps extension members: a backup had no queues and no messages, and restoring it
+  failed on the GRANTs for them. pgbx now saves the queues next to each dump (`<ts>.ext.sql.zst`, encrypted when
+  `pgbx.encryption_key_file` is set); a restore recreates each queue with pgmq's own create function (table and
+  indexes), puts its messages and archive back, moves the msg_id sequence past them and replays the grants.
+  Partitioned queues (pg_partman) are listed but not recreated. Retention deletes the file with its dump.
+- **Fix: restoring a database that uses pg_cron into a new database failed.** pg_cron can only exist in the database
+  named by `cron.database_name`. A restore into any other database now leaves pg_cron out (the result says so,
+  `cron_left_out`); a restore into the cron database itself keeps the jobs but pauses them (`active = false`,
+  `cron_jobs_paused`), so nothing runs twice. Backups record how many cron jobs they hold (`cron_jobs`).
+- **Fix: the restore test counted tables a restore never brings back** (extension members), so it failed on databases
+  with pgmq. It now counts what a restore recreates. Backups taken before 0.6.2 recorded the old count: take a new
+  backup before judging a restore test.
+- **Fix: `pgbx setup server` ignored `shared_preload_libraries` set with ALTER SYSTEM** (`postgresql.auto.conf`, which
+  overrides conf.d): the server would start without pgbx, or setup's advice led to a one-literal value Postgres cannot
+  start with. Setup now merges pgbx into that file too, as a correct list.
+- New test `tests/ext_e2e.sh`: real pgmq and pg_cron through backup, restore test and restore. Run by `tests/run_all.sh`.
+- No schema change (`pgbx--0.6.1--0.6.2.sql` is empty).
+
 ## 0.6.1
 
 - **Fix: backups to HTTPS S3 endpoints failed in 0.6.0** (AWS, R2, Hetzner, Backblaze...): every backup job panicked with
