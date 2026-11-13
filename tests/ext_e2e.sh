@@ -12,7 +12,7 @@ NET=pgbx-ext-net; S3=pgbx-ext-s3; PG=pgbx-ext-pg; EXT_IMAGE=pgbx:test-ext
 BUCKET=ext; SERVER="ext-$(date -u +%Y%m%d%H%M%S)"
 pass=0; fail=0
 check() { if [ "$2" = "$3" ]; then echo "  PASS $1"; pass=$((pass+1)); else echo "  FAIL $1 (got '$2', want '$3')"; fail=$((fail+1)); fi; }
-P() { docker exec -u postgres "$PG" psql -v ON_ERROR_STOP=1 -qAt "$@"; }
+P() { docker exec -i -u postgres "$PG" psql -v ON_ERROR_STOP=1 -qAt "$@"; }
 cleanup() { docker rm -fv "$PG" "$S3" >/dev/null 2>&1; docker network rm "$NET" >/dev/null 2>&1; [ -n "${WORK:-}" ] && rm -rf "$WORK"; }
 trap '[ "${PGBX_EXT_KEEP:-0}" = 1 ] || cleanup' EXIT
 cleanup
