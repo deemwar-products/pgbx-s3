@@ -8,7 +8,7 @@ pgbx keeps everything about your connections in one file, `config.yaml`. It hold
 secrets**: a password is written as `$PGPASSWORD` and read from your environment (or your secrets source) when a
 command runs. pgbx contains no connection code of its own: a connection is a plain connection string or an
 **adapter**, an external program that hands pgbx a connection string
-([ADR 0003](https://github.com/deemwar-products/pgbx/blob/main/docs/adr/0003-connection-adapters.md)).
+([ADR 0003](https://github.com/deemwar-products/pgbx-s3/blob/main/docs/adr/0003-connection-adapters.md)).
 
 ## Where it lives
 

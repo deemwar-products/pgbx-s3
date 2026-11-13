@@ -6,7 +6,7 @@ name: Release
 #   pgbx-darwin-arm64.tar.gz             CLI only (the extension is Linux-only)
 #   pgbx-windows-<arch>.zip              CLI only, pgbx.exe
 # Asset names carry NO version, so installers use the stable redirect
-#   https://github.com/deemwar-products/pgbx/releases/latest/download/<asset>   (no API call, no rate limit)
+#   https://github.com/deemwar-products/pgbx-s3/releases/latest/download/<asset>   (no API call, no rate limit)
 # and a pinned release is .../releases/download/<tag>/<asset>. Each archive holds a VERSION file.
 on:
   workflow_dispatch:

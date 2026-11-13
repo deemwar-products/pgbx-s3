@@ -6,7 +6,7 @@
 # Env: PGBX_SKILL=no (or yes) skips the skill prompt for the one-liner.
 # Parameters: -Version vX.Y.Z (default latest) -Skill (install skill without asking) -NoSkill
 #             -InstallDir DIR (default %LOCALAPPDATA%\pgbx\bin) -BaseUrl URL (mirror/testing)
-# Downloads come from https://github.com/deemwar-products/pgbx/releases/latest/download/<asset> (no API call)
+# Downloads come from https://github.com/deemwar-products/pgbx-s3/releases/latest/download/<asset> (no API call)
 # and are verified against that release's SHA256SUMS; a mismatch aborts.
 param(
     [string]$Version = "",
@@ -17,7 +17,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
-$Repo = 'deemwar-products/pgbx'
+$Repo = 'deemwar-products/pgbx-s3'
 
 # throw, not exit: under `irm | iex` exit would close the user's PowerShell window
 function Fail($msg) { throw "pgbx install: $msg" }
