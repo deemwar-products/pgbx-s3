@@ -29,7 +29,7 @@ FROM $IMAGE
 RUN apt-get update -qq && apt-get install -y -qq --no-install-recommends postgresql-$PG_MAJOR-cron git make \
       postgresql-server-dev-$PG_MAJOR >/dev/null && \
     git clone -q --depth 1 -b $PGMQ_REF https://github.com/pgmq/pgmq /tmp/pgmq && \
-    make -s -C /tmp/pgmq/pgmq-extension install >/dev/null && rm -rf /tmp/pgmq /var/lib/apt/lists/*
+    make -s -C /tmp/pgmq/pgmq-extension && make -s -C /tmp/pgmq/pgmq-extension install >/dev/null && rm -rf /tmp/pgmq /var/lib/apt/lists/*
 EOF
 docker build -q -t "$EXT_IMAGE" "$WORK" >/dev/null || { echo "  FAIL build $EXT_IMAGE"; exit 1; }
 docker network create "$NET" >/dev/null
