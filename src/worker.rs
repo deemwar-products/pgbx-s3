@@ -1871,7 +1871,10 @@ fn user_tables(cl: &mut Client) -> Result<i64, String> {
         .query_one(
             "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
              WHERE c.relkind IN ('r','p') AND n.nspname NOT IN ('pg_catalog','information_schema','pgbx')
-               AND n.nspname NOT LIKE 'pg_toast%'",
+               AND n.nspname NOT LIKE 'pg_toast%'
+               AND NOT c.relispartition
+               AND (NOT EXISTS (SELECT 1 FROM pg_depend d WHERE d.classid = 'pg_class'::regclass AND d.objid = c.oid AND d.deptype = 'e')
+                    OR (n.nspname = 'pgmq' AND (c.relname LIKE 'q\\_%' OR c.relname LIKE 'a\\_%')))",
             &[],
         )
         .map_err(pe)?
@@ -1926,11 +1929,19 @@ fn backup(c: &Ctx, cfg: &JobCfg, db: &str, path: &str, forced: bool, progress: &
     let skipped = rowless.iter().map(|t| jstr(t)).collect::<Vec<_>>().join(",");
     // the roles this database needs, next to the dump (<ts>.globals.sql.zst); never fails the backup
     let globals = crate::extras::backup_globals(c, cfg, &b, &key, &roles, enc.as_ref());
+    // pgmq queues (extension members, never in a pg_dump) next to the dump; losing them fails the backup
+    let ext = match crate::extdata::backup_ext(c, cfg, &b, &key, db, enc.as_ref()) {
+        Ok(x) => x,
+        Err(e) => {
+            let _ = s3auth::fresh(&b).map(|b| { let _ = b.delete_object(&key); b.delete_object(crate::globals::globals_key(&key)) });
+            return Err(format!("backup failed: {e}"));
+        }
+    };
     Ok(Done {
         key: Some(key),
         bytes: bytes as i64,
         extra: format!(
-            "{{\"tables\":{tables},\"compression\":\"{compress}\",\"rows_skipped\":[{skipped}],\"encrypted\":{}{globals}}}",
+            "{{\"tables\":{tables},\"compression\":\"{compress}\",\"rows_skipped\":[{skipped}],\"encrypted\":{}{globals}{ext}}}",
             enc.is_some()
         ),
     })
@@ -2107,6 +2118,7 @@ fn prune(c: &Ctx, cfg: &JobCfg, path: &str, max_backups: i32, max_days: i32, gfs
         let b = s3auth::fresh(&b)?;
         b.delete_object(k).map_err(|e| format!("delete {k}: {e}"))?;
         let _ = b.delete_object(crate::globals::globals_key(k)); // absent for dumps taken before 0.6
+        let _ = b.delete_object(crate::extdata::ext_key(k)); // only for databases with pgmq queues (0.6.2+)
         gone.push(k.clone());
     }
     Ok(gone)
@@ -2126,7 +2138,20 @@ fn pick_backup(c: &Ctx, b: &Bucket, path: &str, at: DateTime<Utc>) -> Result<Str
 fn restore_key_into(
     c: &Ctx, cfg: &JobCfg, admin: &mut Client, b: &Bucket, key: &str, into: &str, app: &str, keep_owner: bool,
     progress: &mut (dyn FnMut(u64) + Send),
-) -> Result<i64, String> {
+) -> Result<(i64, String), String> {
+    // pg_cron can only exist in cron.database_name: left out of any other target, paused in that one.
+    // GRANTs on pgmq queues are left out: the queues only exist once restore_ext (below) has run.
+    let keep_cron = crate::extdata::cron_database(admin) == into;
+    let list = crate::extdata::toc(c, cfg, b, key)?;
+    let filtered = crate::extdata::filter_toc(&list, keep_cron);
+    let list_file = match &filtered {
+        Some((l, _, _)) => {
+            let f = std::env::temp_dir().join(format!("pgbx-{into}-{}.list", std::process::id()));
+            std::fs::write(&f, l).map_err(|e| format!("write {}: {e}", f.display()))?;
+            Some(f)
+        }
+        None => None,
+    };
     // template0: the dump brings its own CREATE EXTENSION pgbx, so start from a database without it
     admin
         .batch_execute(&format!("CREATE DATABASE \"{into}\" TEMPLATE template0"))
@@ -2137,6 +2162,7 @@ fn restore_key_into(
         .env("PGOPTIONS", format!("-c synchronous_commit={sync}"))
         .args(["-h", &c.socket, "-p", &c.port.to_string(), "-U", "postgres", "-d", into])
         .args((!keep_owner).then_some("--no-owner"))
+        .args(list_file.iter().flat_map(|f| ["-L".to_string(), f.display().to_string()]))
         .stdin(Stdio::piped())
         .stdout(Stdio::null())
         .stderr(Stdio::piped())
@@ -2152,6 +2178,9 @@ fn restore_key_into(
     }
     let out = child.wait_with_output().map_err(pe);
     set_child(0);
+    if let Some(f) = &list_file {
+        let _ = std::fs::remove_file(f);
+    }
     let out = out?;
     if shutting_down() {
         if stop_reason() == "cancelled" {
@@ -2169,7 +2198,20 @@ fn restore_key_into(
         return Err(format!("pg_restore failed: {}", String::from_utf8_lossy(&out.stderr).trim()));
     }
     let n = dl?;
-    Ok(n as i64)
+    let mut notes = String::new();
+    if let Some(q) = crate::extdata::restore_ext(c, cfg, b, key, into)? {
+        notes.push_str(&format!(",\"pgmq_restored_from\":{}", jstr(&q)));
+    }
+    if let Some((_, cron, _)) = filtered.filter(|f| f.1 > 0) {
+        notes.push_str(&format!(",\"cron_left_out\":\"{cron} pg_cron entries: pg_cron lives only in the database named by cron.database_name\""));
+    }
+    if keep_cron {
+        let paused = crate::extdata::pause_cron(c, into)?;
+        if paused > 0 {
+            notes.push_str(&format!(",\"cron_jobs_paused\":{paused}"));
+        }
+    }
+    Ok((n as i64, notes))
 }
 
 /// Newest dump at or before `at` -> a NEW database. The live one is never touched.
@@ -2193,11 +2235,11 @@ fn restore(c: &Ctx, cfg: &JobCfg, admin: &mut Client, path: &str, params: &str, 
     } else {
         None
     };
-    let bytes = restore_key_into(c, cfg, admin, &b, &key, &into, "pgbx_restore", with_roles, progress)?;
+    let (bytes, notes) = restore_key_into(c, cfg, admin, &b, &key, &into, "pgbx_restore", with_roles, progress)?;
     // the copy must not back up into the original's folder: give it its own path (= its own name)
     let mut copy = connect(c, &into)?;
     copy.batch_execute("UPDATE pgbx.config SET path = NULL").map_err(pe)?;
-    let extra = roles.map(|r| format!("{{\"roles\":{r}}}")).unwrap_or("{}".into());
+    let extra = format!("{{{}}}", (roles.map(|r| format!(",\"roles\":{r}")).unwrap_or_default() + &notes).trim_start_matches(','));
     Ok(Done { key: Some(key), bytes, extra })
 }
 
@@ -2208,7 +2250,7 @@ fn verify(
     let b = cfg.bucket()?;
     let key = pick_backup(c, &b, path, Utc::now())?;
     let result = (|| {
-        let bytes = restore_key_into(c, cfg, admin, &b, &key, scratch, "pgbx_verify", false, progress)?;
+        let (bytes, _) = restore_key_into(c, cfg, admin, &b, &key, scratch, "pgbx_verify", false, progress)?;
         let mut sc = connect(c, scratch)?;
         let got = user_tables(&mut sc)?;
         let ok = sc.query_one("SELECT 1", &[]).is_ok();

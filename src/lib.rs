@@ -13,6 +13,7 @@ use std::time::Duration;
 
 mod audit;
 pub mod crypt;
+mod extdata;
 mod extras;
 pub mod globals;
 mod notify;
